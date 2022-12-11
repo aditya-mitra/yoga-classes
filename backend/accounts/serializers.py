@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 
-from .models import Account, Contact
+from .models import Account, Contact, Batch
 
 class AccountOutputSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,7 +34,6 @@ class AccountSignupSerializer(serializers.Serializer):
     age = serializers.IntegerField()
 
     def validate_email(self, email_data: str):
-        print('validiting', email_data)
         try:
             Contact.objects.get(email=email_data)
             raise ValidationError('Email already exists!')
@@ -52,4 +51,8 @@ class AccountSignupSerializer(serializers.Serializer):
 
         return account
 
-    
+
+class BatchOutputSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Batch
+        fields = ('starting_time', 'ending_time', 'created_at', 'updated_at')

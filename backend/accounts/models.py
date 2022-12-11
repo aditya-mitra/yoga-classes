@@ -12,7 +12,7 @@ class Account(AbstractBaseUser):
     name = models.CharField(max_length=100)
     age = models.IntegerField()
     password = models.CharField(max_length=200)
-    batch = models.ForeignKey(Batch, null=True, blank=True, on_delete=models.PROTECT)
+    batch = models.ForeignKey(Batch, null=True, blank=True, on_delete=models.SET_NULL)
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)

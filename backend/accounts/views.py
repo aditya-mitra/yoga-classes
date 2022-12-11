@@ -7,8 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 
 from core.auth import JWTAuthentication
 
-from .models import Account, Contact
-from .serializers import AccountOutputSerializer, AccountLoginInputSerializer, AccountSignupSerializer
+from .models import Account, Contact, Batch
+from .serializers import AccountOutputSerializer, AccountLoginInputSerializer, AccountSignupSerializer, BatchOutputSerializer
 
 
 class AccountViewSet(GenericViewSet):
@@ -49,3 +49,12 @@ class AccountCreateLoginViewSet(GenericViewSet):
             "account": contact.account.id,
             "token": JWTAuthentication.generate_jwt_token(contact.account.id)
         })
+
+
+class BatchViewSet(GenericViewSet):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def list(self, request: Request):
+        serializer = BatchOutputSerializer(Batch.objects.all(), many=True)
+        return Response(serializer.data)
