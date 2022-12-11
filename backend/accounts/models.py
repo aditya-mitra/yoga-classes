@@ -2,8 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 
 class Batch(models.Model):
-    starting_time = models.DateTimeField()
-    ending_time = models.DateTimeField()
+    starting_time = models.TimeField()
+    ending_time = models.TimeField()
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
