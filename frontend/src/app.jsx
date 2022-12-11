@@ -1,12 +1,19 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, createStandaloneToast } from '@chakra-ui/react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import AccountInfo from './routes/accounts';
 import PaymentsForms from './routes/accounts/payment';
 import Login from './routes/auth/login';
 import Register from './routes/auth/register';
+import Home from './routes/home';
+
+const { ToastContainer } = createStandaloneToast();
 
 const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Home />,
+  },
   {
     path: '/account',
     element: <AccountInfo />,
@@ -20,7 +27,7 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: '/register',
+    path: '/signup',
     element: <Register />,
   },
 ]);
@@ -29,6 +36,7 @@ export default function App() {
   return (
     <ChakraProvider>
       <RouterProvider router={router} />
+      <ToastContainer />
     </ChakraProvider>
   );
 }

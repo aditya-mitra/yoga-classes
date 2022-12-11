@@ -33,6 +33,14 @@ class AccountSignupSerializer(serializers.Serializer):
     password = serializers.CharField()
     age = serializers.IntegerField()
 
+    def validate_age(self, age_data: int):
+        if age_data < 18:
+            raise ValidationError("You must be minimum 18 years of age")
+        elif age_data > 65:
+            raise ValidationError("Sorry, this program is not meant for ages above 65")
+        
+        return age_data
+
     def validate_email(self, email_data: str):
         try:
             Contact.objects.get(email=email_data)

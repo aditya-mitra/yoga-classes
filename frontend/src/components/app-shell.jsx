@@ -1,24 +1,24 @@
 import {
   Box,
+  Button,
   Drawer,
   DrawerContent,
   DrawerOverlay,
   Flex,
-  Icon,
   IconButton,
   Text,
-  useColorModeValue,
+  useColorMode,
   useDisclosure,
 } from '@chakra-ui/react';
 import { FiMenu } from 'react-icons/fi';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-export default function AppShell({ children }) {
+export default function AppShell({ hideFullSideBar, children }) {
   const sidebar = useDisclosure();
-  const color = useColorModeValue('gray.600', 'gray.300');
+  const { colorMode, toggleColorMode } = useColorMode();
 
   const NavItem = (props) => {
-    const { icon,  route, routeName, ...rest } = props;
+    const { icon, route, routeName, ...rest } = props;
     return (
       <Flex
         align="center"
@@ -73,16 +73,18 @@ export default function AppShell({ children }) {
           Yoga Classes
         </Text>
       </Flex>
-      <Flex
-        direction="column"
-        as="nav"
-        fontSize="sm"
-        color="gray.600"
-        aria-label="Main Navigation"
-      >
-        <NavItem route="/account" routeName="Batch" />
-        <NavItem route="/account/make-payment" routeName="Payment" />
-      </Flex>
+      {!hideFullSideBar && (
+        <Flex
+          direction="column"
+          as="nav"
+          fontSize="sm"
+          color="gray.600"
+          aria-label="Main Navigation"
+        >
+          <NavItem route="/account" routeName="Batch" />
+          <NavItem route="/account/make-payment" routeName="Payment" />
+        </Flex>
+      )}
     </Box>
   );
 
@@ -103,7 +105,7 @@ export default function AppShell({ children }) {
         <Flex
           as="header"
           align="center"
-          justify="space-between"
+          justify="end"
           w="full"
           px="4"
           bg="white"
@@ -119,6 +121,9 @@ export default function AppShell({ children }) {
             icon={<FiMenu />}
             size="sm"
           />
+          <Button size="sm" onClick={toggleColorMode}>
+            {colorMode === 'dark' ? 'Dark' : 'Light'} Mode
+          </Button>
         </Flex>
 
         <Box as="main" p="4">
