@@ -6,6 +6,7 @@ import PaymentsForms from './routes/accounts/payment';
 import Login from './routes/auth/login';
 import Register from './routes/auth/register';
 import Home from './routes/home';
+import PrevPayments from './routes/accounts/prev-payment';
 
 const { ToastContainer } = createStandaloneToast();
 
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
   {
     path: '/account/make-payment',
     element: <PaymentsForms />,
+  },
+  {
+    path: '/account/payments',
+    element: <PrevPayments />,
   },
   {
     path: '/login',

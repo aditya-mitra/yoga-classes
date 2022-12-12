@@ -4,7 +4,7 @@ export default function authApi() {
   const axios = getInstance();
 
   return {
-    login: async ({ email, password }) =>
+    login: ({ email, password }) =>
       axios
         .post('/account/login', { email, password })
         .then((response) => response.data)
