@@ -50,6 +50,7 @@ export default function AccountInfo() {
       >
         {paymentsData.map((pay) => (
           <Box
+            key={pay.id}
             w="sm"
             mx="auto"
             bg="white"

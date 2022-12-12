@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { FiMenu } from 'react-icons/fi';
 import { MdKeyboardArrowRight } from 'react-icons/md';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function AppShell({ hideFullSideBar, children }) {
   const sidebar = useDisclosure();
@@ -22,6 +22,7 @@ export default function AppShell({ hideFullSideBar, children }) {
   const { colorMode, toggleColorMode } = useColorMode();
 
   const NavItem = (props) => {
+    const navigate = useNavigate();
     const { icon, route, routeName, children, ...rest } = props;
     return (
       <Flex
@@ -40,6 +41,7 @@ export default function AppShell({ hideFullSideBar, children }) {
         role="group"
         fontWeight="semibold"
         transition=".15s ease"
+        onClick={() => navigate(route)}
         {...rest}
       >
         {route && <Link to={route}>{routeName}</Link>}

@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import {
   Progress,
   Box,
@@ -7,187 +7,65 @@ import {
   Heading,
   Flex,
   FormControl,
-  GridItem,
   FormLabel,
   Input,
-  Select,
-  SimpleGrid,
-  InputLeftAddon,
-  InputGroup,
-  Textarea,
-  FormHelperText,
-  InputRightElement,
+  Stack,
+  Radio,
+  RadioGroup,
+  Center,
 } from '@chakra-ui/react';
+import { useFormik } from 'formik';
 
-import { useToast } from '@chakra-ui/react';
 import AppShell from '../../components/app-shell';
+import { batchApi, paymentApi } from '../../utils/api';
+import { toastApiErrors, toastInfo } from '../../utils/toastErrors';
+import { getReadableTime } from '../../utils/lib';
 
-const Form1 = () => {
-  const [show, setShow] = useState(false);
-  const handleClick = () => setShow(!show);
+const Form1 = ({ formik }) => {
+  const [batches, setBatches] = useState([]);
+
+  useEffect(() => {
+    batchApi()
+      .getAll()
+      .then((data) => setBatches(data))
+      .catch((err) => toastApiErrors(err.response?.data));
+  }, []);
+
+  console.log(formik.values.batchId);
+
   return (
     <>
       <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
-        User Registration
+        Select Batch
       </Heading>
       <Flex>
-        <FormControl mr="5%">
-          <FormLabel htmlFor="first-name" fontWeight={'normal'}>
-            First name
-          </FormLabel>
-          <Input id="first-name" placeholder="First name" />
-        </FormControl>
-
-        <FormControl>
-          <FormLabel htmlFor="last-name" fontWeight={'normal'}>
-            Last name
-          </FormLabel>
-          <Input id="last-name" placeholder="First name" />
-        </FormControl>
+        <RadioGroup
+          name={'batchId'}
+          value={formik.values.batchId}
+          onChange={(val) => formik.setFieldValue('batchId', val)}
+        >
+          <Stack>
+            {batches.map((bat) => (
+              <Radio key={bat.id} size="lg" value={bat.id + ''} colorScheme="orange">
+                Starts at: {getReadableTime(bat.starting_time)} | Ends at:{' '}
+                {getReadableTime(bat.ending_time)}
+              </Radio>
+            ))}
+          </Stack>
+        </RadioGroup>
       </Flex>
-      <FormControl mt="2%">
-        <FormLabel htmlFor="email" fontWeight={'normal'}>
-          Email address
-        </FormLabel>
-        <Input id="email" type="email" />
-        <FormHelperText>We'll never share your email.</FormHelperText>
-      </FormControl>
-
-      <FormControl>
-        <FormLabel htmlFor="password" fontWeight={'normal'} mt="2%">
-          Password
-        </FormLabel>
-        <InputGroup size="md">
-          <Input
-            pr="4.5rem"
-            type={show ? 'text' : 'password'}
-            placeholder="Enter password"
-          />
-          <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? 'Hide' : 'Show'}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
     </>
   );
 };
 
-const Form2 = () => {
+const Form2 = ({ formik }) => {
   return (
     <>
       <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
-        User Details
+        Enter Payment Amount
       </Heading>
-      <FormControl as={GridItem} colSpan={[6, 3]}>
-        <FormLabel
-          htmlFor="country"
-          fontSize="sm"
-          fontWeight="md"
-          color="gray.700"
-          _dark={{
-            color: 'gray.50',
-          }}
-        >
-          Country / Region
-        </FormLabel>
-        <Select
-          id="country"
-          name="country"
-          autoComplete="country"
-          placeholder="Select option"
-          focusBorderColor="brand.400"
-          shadow="sm"
-          size="sm"
-          w="full"
-          rounded="md"
-        >
-          <option>United States</option>
-          <option>Canada</option>
-          <option>Mexico</option>
-        </Select>
-      </FormControl>
 
-      <FormControl as={GridItem} colSpan={6}>
-        <FormLabel
-          htmlFor="street_address"
-          fontSize="sm"
-          fontWeight="md"
-          color="gray.700"
-          _dark={{
-            color: 'gray.50',
-          }}
-          mt="2%"
-        >
-          Street address
-        </FormLabel>
-        <Input
-          type="text"
-          name="street_address"
-          id="street_address"
-          autoComplete="street-address"
-          focusBorderColor="brand.400"
-          shadow="sm"
-          size="sm"
-          w="full"
-          rounded="md"
-        />
-      </FormControl>
-
-      <FormControl as={GridItem} colSpan={[6, 6, null, 2]}>
-        <FormLabel
-          htmlFor="city"
-          fontSize="sm"
-          fontWeight="md"
-          color="gray.700"
-          _dark={{
-            color: 'gray.50',
-          }}
-          mt="2%"
-        >
-          City
-        </FormLabel>
-        <Input
-          type="text"
-          name="city"
-          id="city"
-          autoComplete="city"
-          focusBorderColor="brand.400"
-          shadow="sm"
-          size="sm"
-          w="full"
-          rounded="md"
-        />
-      </FormControl>
-
-      <FormControl as={GridItem} colSpan={[6, 3, null, 2]}>
-        <FormLabel
-          htmlFor="state"
-          fontSize="sm"
-          fontWeight="md"
-          color="gray.700"
-          _dark={{
-            color: 'gray.50',
-          }}
-          mt="2%"
-        >
-          State / Province
-        </FormLabel>
-        <Input
-          type="text"
-          name="state"
-          id="state"
-          autoComplete="state"
-          focusBorderColor="brand.400"
-          shadow="sm"
-          size="sm"
-          w="full"
-          rounded="md"
-        />
-      </FormControl>
-
-      <FormControl as={GridItem} colSpan={[6, 3, null, 2]}>
+      <FormControl>
         <FormLabel
           htmlFor="postal_code"
           fontSize="sm"
@@ -198,13 +76,13 @@ const Form2 = () => {
           }}
           mt="2%"
         >
-          ZIP / Postal
+          Amount
         </FormLabel>
         <Input
           type="text"
-          name="postal_code"
-          id="postal_code"
-          autoComplete="postal-code"
+          name="amount"
+          value={formik.values.amount}
+          onChange={formik.handleChange}
           focusBorderColor="brand.400"
           shadow="sm"
           size="sm"
@@ -216,77 +94,37 @@ const Form2 = () => {
   );
 };
 
-const Form3 = () => {
+const Form3 = ({ formik }) => {
   return (
     <>
       <Heading w="100%" textAlign={'center'} fontWeight="normal">
-        Social Handles
+        Complete Payment
       </Heading>
-      <SimpleGrid columns={1} spacing={6}>
-        <FormControl as={GridItem} colSpan={[3, 2]}>
-          <FormLabel
-            fontSize="sm"
-            fontWeight="md"
-            color="gray.700"
-            _dark={{
-              color: 'gray.50',
-            }}
-          >
-            Website
-          </FormLabel>
-          <InputGroup size="sm">
-            <InputLeftAddon
-              bg="gray.50"
-              _dark={{
-                bg: 'gray.800',
-              }}
-              color="gray.500"
-              rounded="md"
-            >
-              http://
-            </InputLeftAddon>
-            <Input
-              type="tel"
-              placeholder="www.example.com"
-              focusBorderColor="brand.400"
-              rounded="md"
-            />
-          </InputGroup>
-        </FormControl>
-
-        <FormControl id="email" mt={1}>
-          <FormLabel
-            fontSize="sm"
-            fontWeight="md"
-            color="gray.700"
-            _dark={{
-              color: 'gray.50',
-            }}
-          >
-            About
-          </FormLabel>
-          <Textarea
-            placeholder="you@example.com"
-            rows={3}
-            shadow="sm"
-            focusBorderColor="brand.400"
-            fontSize={{
-              sm: 'sm',
-            }}
-          />
-          <FormHelperText>
-            Brief description for your profile. URLs are hyperlinked.
-          </FormHelperText>
-        </FormControl>
-      </SimpleGrid>
+      <Center>
+        <Button onClick={formik.handleSubmit} size={'lg'} my={'9'}>
+          PAY
+        </Button>
+      </Center>
     </>
   );
 };
 
 export default function PaymentsForms() {
-  const toast = useToast();
   const [step, setStep] = useState(1);
   const [progress, setProgress] = useState(33.33);
+
+  const formik = useFormik({
+    initialValues: {
+      batchId: null,
+      amount: 0,
+    },
+    onSubmit: (values) =>
+      paymentApi()
+        .create(values)
+        .then(() => toastInfo('Payment Successful', null, 'success'))
+        .catch((err) => toastApiErrors(err.response?.data)),
+  });
+
   return (
     <AppShell>
       <Box
@@ -298,14 +136,14 @@ export default function PaymentsForms() {
         m="10px auto"
         as="form"
       >
-        <Progress
-          hasStripe
-          value={progress}
-          mb="5%"
-          mx="5%"
-          isAnimated
-        ></Progress>
-        {step === 1 ? <Form1 /> : step === 2 ? <Form2 /> : <Form3 />}
+        <Progress hasStripe value={progress} mb="5%" mx="5%" isAnimated />
+        {step === 1 ? (
+          <Form1 formik={formik} />
+        ) : step === 2 ? (
+          <Form2 formik={formik} />
+        ) : (
+          <Form3 formik={formik} />
+        )}
         <ButtonGroup mt="5%" w="100%">
           <Flex w="100%" justifyContent="space-between">
             <Flex>
@@ -339,24 +177,6 @@ export default function PaymentsForms() {
                 Next
               </Button>
             </Flex>
-            {step === 3 ? (
-              <Button
-                w="7rem"
-                colorScheme="red"
-                variant="solid"
-                onClick={() => {
-                  toast({
-                    title: 'Account created.',
-                    description: "We've created your account for you.",
-                    status: 'success',
-                    duration: 3000,
-                    isClosable: true,
-                  });
-                }}
-              >
-                Submit
-              </Button>
-            ) : null}
           </Flex>
         </ButtonGroup>
       </Box>

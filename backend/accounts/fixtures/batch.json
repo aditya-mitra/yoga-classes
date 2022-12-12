@@ -3,15 +3,6 @@
     "model": "accounts.batch",
     "fields": {
       "starting_time": "19:00:00.577",
-      "ending_time": "19:00:00.577",
-      "created_at": "2022-12-11T19:00:00.578Z",
-      "updated_at": "2022-12-11T19:00:00.578Z"
-    }
-  },
-  {
-    "model": "accounts.batch",
-    "fields": {
-      "starting_time": "20:00:00.577",
       "ending_time": "20:00:00.577",
       "created_at": "2022-12-11T19:00:00.578Z",
       "updated_at": "2022-12-11T19:00:00.578Z"
@@ -20,7 +11,7 @@
   {
     "model": "accounts.batch",
     "fields": {
-      "starting_time": "21:00:00.577",
+      "starting_time": "20:00:00.577",
       "ending_time": "21:00:00.577",
       "created_at": "2022-12-11T19:00:00.578Z",
       "updated_at": "2022-12-11T19:00:00.578Z"
@@ -29,8 +20,17 @@
   {
     "model": "accounts.batch",
     "fields": {
-      "starting_time": "22:00:00.577",
+      "starting_time": "21:00:00.577",
       "ending_time": "22:00:00.577",
+      "created_at": "2022-12-11T19:00:00.578Z",
+      "updated_at": "2022-12-11T19:00:00.578Z"
+    }
+  },
+  {
+    "model": "accounts.batch",
+    "fields": {
+      "starting_time": "22:00:00.577",
+      "ending_time": "23:00:00.577",
       "created_at": "2022-12-11T19:00:00.578Z",
       "updated_at": "2022-12-11T19:00:00.578Z"
     }
