@@ -13,7 +13,7 @@ class PaymentsViewSet(GenericViewSet):
     authentication_classes = [JWTAuthentication]
 
     def get_payments(self, request):
-        payments = Payment.objects.filter(account=request.user)
+        payments = Payment.objects.filter(account=request.user).order_by('-created_at')
 
         serializer = PaymentSerializer(payments, many=True)
 

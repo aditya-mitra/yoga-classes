@@ -18,10 +18,12 @@ class PaymentSerializer(serializers.ModelSerializer):
     def validate(self, data: dict):
         account = data.get('account')
         
-        payment = Payment.objects.filter(account=account).order_by('-created_at')[0]
+        payment = Payment.objects.filter(account=account).order_by('-created_at')
 
         if not payment:
             return data
+
+        payment = payment[0]
 
         payment.created_at = payment.created_at.replace(tzinfo=None)
 

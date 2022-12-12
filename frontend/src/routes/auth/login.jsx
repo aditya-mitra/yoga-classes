@@ -85,7 +85,7 @@ export default function Login() {
                 >
                   Login
                 </Button>
-                <Button variant="outline" onClick={() => navigate('/register')}>
+                <Button variant="outline" onClick={() => navigate('/signup')}>
                   Create New Account
                 </Button>
               </Stack>

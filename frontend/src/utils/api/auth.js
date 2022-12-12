@@ -14,6 +14,9 @@ export default function authApi() {
     signup: ({ email, name, password, age }) =>
       axios
         .post('/account/signup', { email, name, password, age })
-        .then((response) => response.data),
+        .then((response) => response.data)
+        .then((data) => {
+          localStorage.setItem('jwt-token', JSON.stringify(data));
+        }),
   };
 }

@@ -20,6 +20,7 @@ import AppShell from '../../components/app-shell';
 import { batchApi, paymentApi } from '../../utils/api';
 import { toastApiErrors, toastInfo } from '../../utils/toastErrors';
 import { getReadableTime } from '../../utils/lib';
+import { useNavigate } from 'react-router-dom';
 
 const Form1 = ({ formik }) => {
   const [batches, setBatches] = useState([]);
@@ -46,7 +47,12 @@ const Form1 = ({ formik }) => {
         >
           <Stack>
             {batches.map((bat) => (
-              <Radio key={bat.id} size="lg" value={bat.id + ''} colorScheme="orange">
+              <Radio
+                key={bat.id}
+                size="lg"
+                value={bat.id + ''}
+                colorScheme="orange"
+              >
                 Starts at: {getReadableTime(bat.starting_time)} | Ends at:{' '}
                 {getReadableTime(bat.ending_time)}
               </Radio>
@@ -112,6 +118,7 @@ const Form3 = ({ formik }) => {
 export default function PaymentsForms() {
   const [step, setStep] = useState(1);
   const [progress, setProgress] = useState(33.33);
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -121,7 +128,10 @@ export default function PaymentsForms() {
     onSubmit: (values) =>
       paymentApi()
         .create(values)
-        .then(() => toastInfo('Payment Successful', null, 'success'))
+        .then(() => {
+          navigate('/account');
+          toastInfo('Payment Successful', null, 'success');
+        })
         .catch((err) => toastApiErrors(err.response?.data)),
   });
 
