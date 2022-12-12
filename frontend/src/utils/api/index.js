@@ -1,3 +1,4 @@
+import accountApi from './account';
 import authApi from './auth';
 
-export { authApi };
+export { authApi, accountApi };

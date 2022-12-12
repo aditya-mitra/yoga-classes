@@ -7,18 +7,22 @@ import {
   Flex,
   IconButton,
   Text,
+  Icon,
+  Collapse,
   useColorMode,
   useDisclosure,
 } from '@chakra-ui/react';
 import { FiMenu } from 'react-icons/fi';
+import { MdKeyboardArrowRight } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
 export default function AppShell({ hideFullSideBar, children }) {
   const sidebar = useDisclosure();
+  const integrations = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
 
   const NavItem = (props) => {
-    const { icon, route, routeName, ...rest } = props;
+    const { icon, route, routeName, children, ...rest } = props;
     return (
       <Flex
         align="center"
@@ -38,7 +42,8 @@ export default function AppShell({ hideFullSideBar, children }) {
         transition=".15s ease"
         {...rest}
       >
-        <Link to={route}>{routeName}</Link>
+        {route && <Link to={route}>{routeName}</Link>}
+        {children}
       </Flex>
     );
   };
@@ -82,7 +87,28 @@ export default function AppShell({ hideFullSideBar, children }) {
           aria-label="Main Navigation"
         >
           <NavItem route="/account" routeName="Batch" />
-          <NavItem route="/account/make-payment" routeName="Payment" />
+          <NavItem onClick={integrations.onToggle}>
+            Payments
+            <Icon
+              as={MdKeyboardArrowRight}
+              ml="auto"
+              transform={integrations.isOpen && 'rotate(90deg)'}
+            />
+          </NavItem>
+          <Collapse in={integrations.isOpen}>
+            <NavItem
+              route="/account/payments"
+              routeName="Previous Payments"
+              pl="12"
+              py="2"
+            />
+            <NavItem
+              route="/account/make-payment"
+              routeName="New Payment"
+              pl="12"
+              py="2"
+            />
+          </Collapse>
         </Flex>
       )}
     </Box>

@@ -1,101 +1,75 @@
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Stack,
-  Textarea,
-  useColorModeValue,
-  VStack,
-} from '@chakra-ui/react';
-import React from 'react';
-import { BsPerson } from 'react-icons/bs';
-import { MdOutlineEmail } from 'react-icons/md';
+import { Box, Flex, chakra, Spacer } from '@chakra-ui/react';
 
 import AppShell from '../../components/app-shell';
+import { useEffect, useState } from 'preact/hooks';
+import { accountApi } from '../../utils/api';
+import { toastApiErrors } from '../../utils/toastErrors';
+import { getReadableDate } from '../../utils/lib';
+
+function Details({ name, value }) {
+  return (
+    <>
+      <Flex>
+        <chakra.h1
+          fontSize="xl"
+          fontWeight="bold"
+          color="gray.800"
+          _dark={{ color: 'white' }}
+        >
+          {name} :
+        </chakra.h1>
+        <Spacer />
+        <chakra.h1 fontSize="xl" color="gray.800" _dark={{ color: 'white' }}>
+          {value}
+        </chakra.h1>
+      </Flex>
+    </>
+  );
+}
 
 export default function AccountInfo() {
+  const [userData, setUserData] = useState({});
+
+  useEffect(() => {
+    accountApi()
+      .retrieve()
+      .then((data) => setUserData(data))
+      .catch((err) => toastApiErrors(err.response?.data));
+  }, []);
+
+
   return (
     <AppShell>
       <Flex
-        bg={useColorModeValue('gray.100', 'gray.900')}
-        align="center"
-        justify="center"
+        bg="#edf3f8"
+        _dark={{ bg: '#3e3e3e' }}
+        p={50}
+        w="full"
+        alignItems="center"
+        justifyContent="center"
       >
         <Box
-          borderRadius="lg"
-          m={{ base: 5, md: 16, lg: 10 }}
-          p={{ base: 5, lg: 16 }}
+          w="sm"
+          mx="auto"
+          bg="white"
+          _dark={{ bg: 'gray.800' }}
+          shadow="lg"
+          rounded="lg"
+          overflow="hidden"
         >
-          <Box>
-            <VStack spacing={{ base: 4, md: 8, lg: 20 }}>
-              <Heading
-                fontSize={{
-                  base: '4xl',
-                  md: '5xl',
-                }}
-              >
-                Get in Touch
-              </Heading>
+          <Flex alignItems="center" px={6} py={3} bg="gray.900">
+            <chakra.h1 mx={3} color="white" fontWeight="bold" fontSize="lg">
+              {userData.name}
+            </chakra.h1>
+          </Flex>
 
-              <Stack
-                spacing={{ base: 4, md: 8, lg: 20 }}
-                direction={{ base: 'column', md: 'row' }}
-              >
-                <Box
-                  bg={useColorModeValue('white', 'gray.700')}
-                  borderRadius="lg"
-                  p={8}
-                  color={useColorModeValue('gray.700', 'whiteAlpha.900')}
-                  shadow="base"
-                >
-                  <VStack spacing={5}>
-                    <FormControl isRequired>
-                      <FormLabel>Name</FormLabel>
-
-                      <InputGroup>
-                        <InputLeftElement children={<BsPerson />} />
-                        <Input
-                          type="text"
-                          name="name"
-                          placeholder="Your Name"
-                        />
-                      </InputGroup>
-                    </FormControl>
-
-                    <FormControl isRequired>
-                      <FormLabel>Email</FormLabel>
-
-                      <InputGroup>
-                        <InputLeftElement children={<MdOutlineEmail />} />
-                        <Input
-                          type="email"
-                          name="email"
-                          placeholder="Your Email"
-                        />
-                      </InputGroup>
-                    </FormControl>
-
-                    <Button
-                      colorScheme="blue"
-                      bg="blue.400"
-                      color="white"
-                      _hover={{
-                        bg: 'blue.500',
-                      }}
-                      isFullWidth
-                    >
-                      Send Message
-                    </Button>
-                  </VStack>
-                </Box>
-              </Stack>
-            </VStack>
+          <Box py={4} px={6}>
+            <Details name="Age" value={userData.age} />
+            <Details
+              name="Member Since"
+              value={getReadableDate(userData.created_at)}
+            />
+            <Details name="Batch No" value={userData.batch} />
           </Box>
         </Box>
       </Flex>
