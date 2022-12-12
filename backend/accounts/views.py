@@ -58,3 +58,13 @@ class BatchViewSet(GenericViewSet):
     def list(self, request: Request):
         serializer = BatchOutputSerializer(Batch.objects.all(), many=True)
         return Response(serializer.data)
+
+    def get(self, request: Request, batch_id: int):
+        try:
+            batch = Batch.objects.get(id=batch_id)
+        except Batch.DoesNotExist:
+            return Response({}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = BatchOutputSerializer(batch)
+        return Response(serializer.data)
+        

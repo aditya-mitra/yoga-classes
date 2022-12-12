@@ -63,4 +63,4 @@ class AccountSignupSerializer(serializers.Serializer):
 class BatchOutputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Batch
-        fields = ('starting_time', 'ending_time', 'created_at', 'updated_at')
+        fields = ('id', 'starting_time', 'ending_time', 'created_at', 'updated_at')

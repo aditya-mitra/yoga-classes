@@ -2,9 +2,9 @@ import { Box, Flex, chakra, Spacer } from '@chakra-ui/react';
 
 import AppShell from '../../components/app-shell';
 import { useEffect, useState } from 'preact/hooks';
-import { accountApi } from '../../utils/api';
+import { accountApi, batchApi } from '../../utils/api';
 import { toastApiErrors } from '../../utils/toastErrors';
-import { getReadableDate } from '../../utils/lib';
+import { getReadableDate, getReadableTime } from '../../utils/lib';
 
 function Details({ name, value }) {
   return (
@@ -29,6 +29,7 @@ function Details({ name, value }) {
 
 export default function AccountInfo() {
   const [userData, setUserData] = useState({});
+  const [batchData, setBatchData] = useState({});
 
   useEffect(() => {
     accountApi()
@@ -37,6 +38,14 @@ export default function AccountInfo() {
       .catch((err) => toastApiErrors(err.response?.data));
   }, []);
 
+  useEffect(() => {
+    if (!userData.batch) return;
+
+    batchApi()
+      .getOne(userData.batch)
+      .then((data) => setBatchData(data))
+      .catch((err) => toastApiErrors(err.response?.data));
+  }, [userData]);
 
   return (
     <AppShell>
@@ -45,6 +54,7 @@ export default function AccountInfo() {
         _dark={{ bg: '#3e3e3e' }}
         p={50}
         w="full"
+        flexDir={'column'}
         alignItems="center"
         justifyContent="center"
       >
@@ -59,7 +69,7 @@ export default function AccountInfo() {
         >
           <Flex alignItems="center" px={6} py={3} bg="gray.900">
             <chakra.h1 mx={3} color="white" fontWeight="bold" fontSize="lg">
-              {userData.name}
+              User: {userData.name}
             </chakra.h1>
           </Flex>
 
@@ -70,6 +80,38 @@ export default function AccountInfo() {
               value={getReadableDate(userData.created_at)}
             />
             <Details name="Batch No" value={userData.batch} />
+          </Box>
+        </Box>
+
+        <Box
+          w="sm"
+          mx="auto"
+          mt="9"
+          bg="white"
+          _dark={{ bg: 'gray.800' }}
+          shadow="lg"
+          rounded="lg"
+          overflow="hidden"
+        >
+          <Flex alignItems="center" px={6} py={3} bg="gray.900">
+            <chakra.h1 mx={3} color="white" fontWeight="bold" fontSize="lg">
+              Batch ID: {batchData.id}
+            </chakra.h1>
+          </Flex>
+
+          <Box py={4} px={6}>
+            <Details
+              name="Starts At"
+              value={getReadableTime(batchData.starting_time)}
+            />
+            <Details
+              name="Ends At"
+              value={getReadableTime(batchData.ending_time)}
+            />
+            <Details
+              name="Started Since"
+              value={getReadableDate(batchData.created_at)}
+            />
           </Box>
         </Box>
       </Flex>

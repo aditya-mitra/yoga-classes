@@ -7,5 +7,6 @@ urlpatterns = [
     path('login', AccountCreateLoginViewSet.as_view({"post": "login"})),
     path('signup', AccountCreateLoginViewSet.as_view({"post": "create"})),
 
-    path('batch', BatchViewSet.as_view({"get": "list"}))
+    path('batch', BatchViewSet.as_view({"get": "list"})),
+    path('batch/<int:batch_id>', BatchViewSet.as_view({"get": "get"})),
 ]
